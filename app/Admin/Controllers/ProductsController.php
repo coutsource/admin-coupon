@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -65,6 +66,9 @@ class ProductsController extends Controller
         return Admin::grid(Product::class, function (Grid $grid) {
             $grid->id('ID')->sortable();
             $grid->title('商品名称');
+            $grid->column('category_name', '商品类别')->display(function () {
+                return $this->category_name;
+            });
             $grid->on_sale('已上架')->display(function ($value) {
                 return $value ? '是' : '否';
             });
@@ -74,7 +78,9 @@ class ProductsController extends Controller
             $grid->review_count('评论数');
 
             $grid->actions(function ($actions) {
-                $actions->disableDelete();
+                if ($actions->row['on_sale']) {
+                    $actions->disableDelete();
+                }
             });
             $grid->tools(function ($tools) {
                 // 禁用批量删除按钮
@@ -102,16 +108,19 @@ class ProductsController extends Controller
             $form->editor('description', '商品描述')->rules('required');
             // 创建一组单选框
             $form->radio('on_sale', '上架')->options(['1' => '是', '0' => '否'])->default('0');
+            $form->select('category_id', '类别')->options(Category::selectOptions());
             // 直接添加一对多的关联模型
             $form->hasMany('skus', function (Form\NestedForm $form) {
                 $form->text('title', 'SKU 名称')->rules('required');
                 $form->text('description', 'SKU 描述')->rules('required');
-                $form->text('price', '单价')->rules('required|numeric|min:0.01');
+                // $form->text('price', '单价')->rules('required|numeric|min:0.01');
+                $form->display('price', '单价')->value(0);
                 $form->text('stock', '剩余库存')->rules('required|integer|min:0');
             });
             // 定义事件回调，当模型即将保存时会触发这个回调
             $form->saving(function (Form $form) {
-                $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price');
+                // $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price');
+                $form->model()->price = 0.00;
             });
         });
     }

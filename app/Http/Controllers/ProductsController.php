@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\OrderItem;
 
+use App\Models\UserConversionCode;
+use App\Models\ConversionCode;
+use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+
 class ProductsController extends Controller
 {
     public function index(Request $request)
@@ -107,5 +112,35 @@ class ProductsController extends Controller
         $products = $request->user()->favoriteProducts()->paginate(16);
 
         return view('products.favorites', ['products' => $products]);
+    }
+
+    public function categories(Request $request)
+    {
+        $user = Auth::guard('api')->user();
+        if ($user) {
+            $userConversionCode = UserConversionCode::where('user_id', $user->id)->first();
+            $conversionCodeId = $userConversionCode->conversion_code_id;
+            $conversionCode = ConversionCode::find($conversionCodeId);
+            $categoryId = $conversionCode->category_id;
+            
+            $products = Product::where('category_id', $categoryId)->where('on_sale', true)->get()->toArray();
+
+            $productItems = [];
+            $categories = Category::where('parent_id', $categoryId)->get();
+            if (!empty($categories)) {
+                foreach ($categories as $item) {
+                    $childProductsItem = Product::where('category_id', $item->id)->where('on_sale', true)->get()->toArray();
+                    if (!empty($childProductsItem)) {
+                        $productItems = array_merge($productItems, $childProductsItem);
+                    }
+                }
+            }
+
+            if (!empty($productItems)) {
+                $products = array_merge($products, $productItems);
+            }
+            return response()->json($products);
+        }
+        return response()->json([]);
     }
 }

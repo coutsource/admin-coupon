@@ -19,3 +19,7 @@
  */
 
 Encore\Admin\Form::forget(['map']);
+
+use Encore\Admin\Facades\Admin;
+
+Admin::js('/vendor/chartjs/dist/Chart.min.js');

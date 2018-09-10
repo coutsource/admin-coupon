@@ -65,4 +65,24 @@ class UserAddressesController extends Controller
 
         return [];
     }
+
+    // api
+    public function apiIndex(Request $request)
+    {
+        return response()->json($request->user()->addresses()->get()->toArray());
+    }
+
+    public function apiStore(UserAddressRequest $request)
+    {
+        $request->user()->addresses()->create($request->only([
+            'province',
+            'city',
+            'district',
+            'address',
+            'zip',
+            'contact_name',
+            'contact_phone'
+        ]));
+        return response()->json($request->user()->addresses()->get()->toArray());
+    }
 }
