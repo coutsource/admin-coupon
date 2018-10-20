@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = ['title', 'description', 'image', 'on_sale', 'rating', 'sold_count', 'review_count', 'price'];
+    protected $fillable = ['title', 'description', 'image', 'on_sale', 'rating', 'sold_count', 'review_count', 'price', 'category_id'];
     protected $casts = [
         'on_sale' => 'boolean', // on_sale 是一个布尔类型的字段
     ];
@@ -15,6 +15,20 @@ class Product extends Model
     public function skus()
     {
         return $this->hasMany(ProductSku::class);
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        if ($this->attributes['category_id'] == 0) {
+            return 'Root';
+        } else {
+            $category = Category::where('id', $this->attributes['category_id'])->firstOrFail();
+            if (empty($category)) {
+                return 'Root';
+            } else {
+                return $category->title;
+            }
+        }
     }
 
     public function getImageUrlAttribute()
