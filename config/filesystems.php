@@ -50,8 +50,8 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'root' => public_path(),
+            'url' => env('APP_URL'),
             'visibility' => 'public',
         ],
 
@@ -61,6 +61,20 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+        ],
+
+
+        'qiniu' => [
+            'driver'  => 'qiniu',
+            'domains' => [
+                'default' => '7d9pmi.com1.z0.glb.clouddn.com/', //你的七牛域名
+                'custom'  => 'caispar.qiniudn.com',     
+                'https'   => 'caispar.qiniudn.com',         //你的自定义域名
+            ],
+            'access_key' => 'lvloYFNZOEBHV6Po2UMZB72QLRg-_HOkibn3LNjH',  //AccessKey
+            'secret_key' => 'mXEVahy59VZXpsreaH7yM7IBsWK1D1ExHDcWvkrj',  //SecretKey
+            'bucket'     => 'caispar',  //Bucket名字
+            'notify_url' => '',  //持久化处理回调地址
         ],
 
     ],
