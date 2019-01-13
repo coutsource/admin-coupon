@@ -41,6 +41,8 @@ Route::group(['middleware' => 'auth:api'], function() {
    	// get addresses
    	Route::get('addresses', 'UserAddressesController@apiIndex');
    	Route::post('address/store', 'UserAddressesController@apiStore');
+    Route::put('address/{id}', 'UserAddressesController@apiUpdate');
+    Route::delete('address/{id}', 'UserAddressesController@apiDestroy');
 });
 
 Route::post('conversion_codes/login', 'ConversionCodesController@login');

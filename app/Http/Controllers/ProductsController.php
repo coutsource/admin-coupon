@@ -123,23 +123,41 @@ class ProductsController extends Controller
             $conversionCode = ConversionCode::find($conversionCodeId);
             $categoryId = $conversionCode->category_id;
             
-            $products = Product::where('category_id', $categoryId)->where('on_sale', true)->get()->toArray();
+            // $products = Product::where('category_id', $categoryId)->where('on_sale', true)->get()->toArray();
 
-            $productItems = [];
+            $data = [];
             $categories = Category::where('parent_id', $categoryId)->get();
             if (!empty($categories)) {
                 foreach ($categories as $item) {
-                    $childProductsItem = Product::where('category_id', $item->id)->where('on_sale', true)->get()->toArray();
-                    if (!empty($childProductsItem)) {
-                        $productItems = array_merge($productItems, $childProductsItem);
+                    $dataItem = [
+                        'id' => $item->id,
+                        'title' => $item->title,
+                        'goods' => []
+                    ];
+                    $childProducts = Product::where('category_id', $item->id)->where('on_sale', true)->get()->toArray();
+                    if (!empty($childProducts)) {
+                        $goods = [];
+                        foreach ($childProducts as $childProductsItem) {
+                            $goodsItem = [
+                                'id' => $childProductsItem['id'],
+                                'title' => $childProductsItem['title'],
+                                'price' => $childProductsItem['price'],
+                                'image' => env('STATIC_URL') . '/' . $childProductsItem['image'],
+                                'description' => $childProductsItem['description'],
+                            ];
+                            array_push($goods, $goodsItem);
+                        }
+                        
+                        $dataItem['goods'] = $goods;
                     }
+                    array_push($data, $dataItem);
                 }
             }
 
-            if (!empty($productItems)) {
-                $products = array_merge($products, $productItems);
-            }
-            return response()->json($products);
+            // if (!empty($productItems)) {
+            //     $products = array_merge($products, $productItems);
+            // }
+            return response()->json($data);
         }
         return response()->json([]);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UserAddress;
 use App\Http\Requests\UserAddressRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserAddressesController extends Controller
 {
@@ -62,7 +63,6 @@ class UserAddressesController extends Controller
     {
         $this->authorize('own', $user_address);
         $user_address->delete();
-
         return [];
     }
 
@@ -72,17 +72,41 @@ class UserAddressesController extends Controller
         return response()->json($request->user()->addresses()->get()->toArray());
     }
 
-    public function apiStore(UserAddressRequest $request)
-    {
-        $request->user()->addresses()->create($request->only([
+    public function apiUpdate(UserAddress $user_address, UserAddressRequest $request) {
+        return response()->json($request->user()->addresses()->update($request->only([
             'province',
             'city',
             'district',
             'address',
             'zip',
+            'area_code',
             'contact_name',
-            'contact_phone'
-        ]));
+            'contact_phone',
+        ])));
+    }
+
+    public function apiDestroy($id) {
+        $userAddress = UserAddress::findOrFail($id);
+        $userAddress->delete();
+    }
+
+    public function apiStore(Request $request)
+    {
+        $user = Auth::guard('api')->user(); 
+        if ($user) {
+            $userAddress = new UserAddress();
+            $userAddress->user_id = $user->id;
+            $userAddress->province = $request->post('province');
+            $userAddress->city = $request->post('city');
+            $userAddress->district = $request->post('county');
+            $userAddress->address = $request->post('address_detail');
+            $userAddress->area_code = $request->post('area_code');
+            $userAddress->zip = $request->post('postal_code');
+            $userAddress->contact_name = $request->post('name');
+            $userAddress->contact_phone = $request->post('tel');
+            $userAddress->save();
+            return response()->json($userAddress);
+        }
         return response()->json($request->user()->addresses()->get()->toArray());
     }
 }
