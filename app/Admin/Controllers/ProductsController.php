@@ -73,9 +73,10 @@ class ProductsController extends Controller
                 return $value ? '是' : '否';
             });
             $grid->price('价格');
-            $grid->rating('评分');
+            $grid->stock('库存');
+            // $grid->rating('评分');
             $grid->sold_count('销量');
-            $grid->review_count('评论数');
+            // $grid->review_count('评论数');
 
             $grid->actions(function ($actions) {
                 if ($actions->row['on_sale']) {
@@ -88,6 +89,8 @@ class ProductsController extends Controller
                     $batch->disableDelete();
                 });
             });
+
+            $grid->model()->orderBy('updated_at', 'desc');
         });
     }
 
@@ -109,19 +112,8 @@ class ProductsController extends Controller
             // 创建一组单选框
             $form->radio('on_sale', '上架')->options(['1' => '是', '0' => '否'])->default('0');
             $form->select('category_id', '类别')->options(Category::selectOptions());
-            // 直接添加一对多的关联模型
-            $form->hasMany('skus', function (Form\NestedForm $form) {
-                $form->text('title', 'SKU 名称')->rules('required');
-                $form->text('description', 'SKU 描述')->rules('required');
-                // $form->text('price', '单价')->rules('required|numeric|min:0.01');
-                $form->display('price', '单价')->value(0);
-                $form->text('stock', '剩余库存')->rules('required|integer|min:0');
-            });
-            // 定义事件回调，当模型即将保存时会触发这个回调
-            $form->saving(function (Form $form) {
-                // $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price');
-                $form->model()->price = 0.00;
-            });
+            $form->text('stock', '库存')->rules('required|integer|min:0');
+            $form->text('price', '价格')->rules('required|min:0');
         });
     }
 }
