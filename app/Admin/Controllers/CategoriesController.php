@@ -36,7 +36,7 @@ class CategoriesController extends Controller
         //     $content->body($this->grid());
         // });
         return Admin::content(function (Content $content) {
-            $content->header('商品类别');
+            $content->header('商品分组');
             $content->row(function (Row $row) {
                 $row->column(6, $this->treeView()->render());
 

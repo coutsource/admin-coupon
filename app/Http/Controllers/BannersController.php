@@ -18,10 +18,18 @@ class BannersController extends Controller
 			$conversionCodeId = $userConversionCode->conversion_code_id;
 			$conversionCode = ConversionCode::find($conversionCodeId);
 			$categoryId = $conversionCode->category_id;
-			
-
+			if (empty($categoryId)) {
+				$categoryId = 0;
+			}
 			$banners = Banner::where('category_id', $categoryId)->get();
-
+			if (count($banners) == 0) {
+				$banners = Banner::where('category_id', 0)->get();
+			}
+			// return response()->json('http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"]);
+			// $url = 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"];
+			foreach ($banners as $item) {
+				$item->image = env('STATIC_URL') . '/' . $item->image;
+			}
 			return response()->json($banners);
 		}
 		return response()->json([]);
