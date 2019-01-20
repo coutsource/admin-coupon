@@ -16,6 +16,7 @@ use Encore\Admin\Controllers\ModelForm;
 use Illuminate\Support\MessageBag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Input;
 use App\Admin\Extensions\CsvExpoter;
 
 class ConversionCodesController extends Controller
@@ -50,7 +51,7 @@ class ConversionCodesController extends Controller
             $content->header('编辑兑换码');
             $content->description($id);
 
-            $content->body($this->form()->edit($id));
+            $content->body($this->form(true)->edit($id));
         });
     }
 
@@ -141,20 +142,18 @@ class ConversionCodesController extends Controller
      *
      * @return Form
      */
-    protected function form()
+    protected function form($edit = false)
     {
-        return Admin::form(ConversionCode::class, function (Form $form) {
+        return Admin::form(ConversionCode::class, function (Form $form) use ($edit) {
             $form->display('id', 'ID');
+
             $form->text('name', '名称')->rules('required');
-            if (!$form->model()->id) {
-                $code = ConversionCode::findAvailableCode();
-                $form->display('code', '兑换码')->value($code);
-                $form->model()->code = $code;
+            if (!$edit) {
+                $form->number('count', '张数');
+                $form->model()->code = ConversionCode::findAvailableCode();
                 $form->model()->passwd = Str::random(4); 
-                $form->model()->used = '0';
-            } else {
-                $form->display('code', '兑换码')->value($form->model()->code);
-            }
+                $form->model()->used = 0;
+            } 
             $form->datetime('not_before', '生效时间');
             $form->datetime('not_after', '失效时间');
             $form->select('category_id', '类别')->options(Category::selectOptions());
@@ -162,6 +161,7 @@ class ConversionCodesController extends Controller
                 '1' => '是',
                 '0' => '否'
             ]);
+            $form->ignore(['count']);
             $form->saving(function (Form $form) {
                 if ($form->used == 1) {
                     throw new \Exception('兑换码已使用，不能编辑');
@@ -187,5 +187,59 @@ class ConversionCodesController extends Controller
                 }
             });
         });
+    }
+
+    public function store() 
+    {
+        $data = Input::all();
+        $count = (int) $data['count'];
+
+        if ($count <= 0 || $count > 100) {
+            $error = new MessageBag([
+                    'title'   => '兑换卡张数错误',
+                    'message' => '一次只能新建1到100张兑换码',
+            ]);
+            return back()->with(compact('error'));
+        }
+
+        if (!$data['name']) {
+            $error = new MessageBag([
+                    'title'   => '名字必填',
+                    'message' => '请填写名字',
+            ]);
+            return back()->with(compact('error'));
+        }
+
+        if (!$data['name']) {
+        
+        }
+
+        if (!$data['not_before']) {
+            $data['not_before'] = date('Y-m-d H:i:s', time());
+        }
+        if ($data['not_after']) {
+            if (strtotime($data['not_after']) < time()) {
+                $error = new MessageBag([
+                    'title'   => '时间错误',
+                    'message' => '时间必须晚于当前时间',
+                 ]);
+                return back()->with(compact('error'));
+            }
+            if (strtotime($data['not_before']) >= strtotime($data['not_after'])) {
+                $error = new MessageBag([
+                    'title'   => '时间错误',
+                    'message' => '生效日期必须早于失效日期',
+                ]);
+                return back()->with(compact('error'));
+            }
+        }
+
+        while($count > 0 ) {
+            $count--;
+            $res = $this->form()->store();
+        }
+
+        return redirect('admin/conversion_codes');
+
     }
 }
