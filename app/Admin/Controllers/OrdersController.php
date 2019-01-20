@@ -96,6 +96,11 @@ class OrdersController extends Controller
                     $batch->disableDelete();
                 });
             });
+            // filter
+            $grid->filter(function($filter) { 
+                $filter->disableIdFilter();
+                $filter->like('no', '订单流水号');
+            });
         });
     }
 

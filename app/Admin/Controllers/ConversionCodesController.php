@@ -122,6 +122,15 @@ class ConversionCodesController extends Controller
             });
             $grid->model()->orderBy('updated_at', 'desc');
 
+            // filter
+            $grid->filter(function($filter) {
+                $filter->disableIdFilter();
+                $filter->like('name', '名称');
+                $filter->equal('code', '兑换码');
+                $filter->date('not_before', '生效日期');
+                $filter->equal('used', '使用状态')->select([0 => '未使用', 1 => '已使用']);
+            });
+
             // custom grid exporter
             $grid->exporter(new CsvExpoter());
         });
