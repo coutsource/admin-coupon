@@ -26,7 +26,7 @@ class ConversionCode extends Model
     protected $dates = ['not_before', 'not_after'];
 
 
-    public static function findAvailableCode($length = 8)
+    public static function findAvailableCode($length = 6)
     {
         do {
             // 生成一个指定长度的随机字符串，并转成大写
@@ -37,11 +37,4 @@ class ConversionCode extends Model
         return $code;
     }
 
-    public static function createConversionCode()
-    {
-    	$time = date('YmdHis', time());
-    	$num = mt_rand(100, 999);
-    	return substr($time, 2) . $num;
-    }
-    
 }

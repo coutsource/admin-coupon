@@ -15,6 +15,7 @@ use Encore\Admin\Controllers\ModelForm;
 
 use Illuminate\Support\MessageBag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 
 class ConversionCodesController extends Controller
@@ -119,6 +120,7 @@ class ConversionCodesController extends Controller
                     $batch->add('批量激活', new ActiveConversionCode(1));
                 });
             });
+            $grid->model()->orderBy('updated_at', 'desc');
         });
     }
 
@@ -133,10 +135,10 @@ class ConversionCodesController extends Controller
             $form->display('id', 'ID');
             $form->text('name', '名称')->rules('required');
             if (!$form->model()->id) {
-                $code = ConversionCode::createConversionCode();
+                $code = ConversionCode::findAvailableCode();
                 $form->display('code', '兑换码')->value($code);
                 $form->model()->code = $code;
-                $form->model()->passwd = ConversionCode::findAvailableCode();
+                $form->model()->passwd = Str::random(4); 
                 $form->model()->used = '0';
             } else {
                 $form->display('code', '兑换码')->value($form->model()->code);
