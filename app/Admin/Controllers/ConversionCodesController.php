@@ -16,7 +16,7 @@ use Encore\Admin\Controllers\ModelForm;
 use Illuminate\Support\MessageBag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use App\Admin\Extensions\CsvExpoter;
 
 class ConversionCodesController extends Controller
 {
@@ -121,6 +121,9 @@ class ConversionCodesController extends Controller
                 });
             });
             $grid->model()->orderBy('updated_at', 'desc');
+
+            // custom grid exporter
+            $grid->exporter(new CsvExpoter());
         });
     }
 
