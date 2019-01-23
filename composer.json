@@ -4,6 +4,12 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    ],
     "require": {
         "php": ">=7.0.0",
         "encore/laravel-admin": "1.5.*",
@@ -14,7 +20,8 @@
         "overtrue/laravel-lang": "^3.0",
         "predis/predis": "^1.1",
         "yansongda/pay": "^2.3",
-        "zgldh/qiniu-laravel-storage": "^0.10.0"
+        "zgldh/qiniu-laravel-storage": "^0.10.0",
+        "caijinlin/laravel-u-editor": "~1.4"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

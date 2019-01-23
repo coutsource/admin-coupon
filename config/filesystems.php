@@ -67,13 +67,13 @@ return [
         'qiniu' => [
             'driver'  => 'qiniu',
             'domains' => [
-                'default' => 'file.wsc18.cn', //你的七牛域名
-                'custom'  => 'file.wsc18.cn',     
-                'https'   => 'file.wsc18.cn',         //你的自定义域名
+                'default' => env('QINIU_DOMAIN'), //你的七牛域名
+                'custom'  => env('QINIU_DOMAIN'),
+                'https'   => env('QINIU_DOMAIN')
             ],
-            'access_key' => 'lvloYFNZOEBHV6Po2UMZB72QLRg-_HOkibn3LNjH',  //AccessKey
-            'secret_key' => 'mXEVahy59VZXpsreaH7yM7IBsWK1D1ExHDcWvkrj',  //SecretKey
-            'bucket'     => 'coupon-console',  //Bucket名字
+            'access_key' => env('QINIU_ACCESS_KEY'),
+            'secret_key'=> env('QINIU_SECRET_KEY'),
+            'bucket'=> env('QINIU_BUCKET'),
             'notify_url' => '',  //持久化处理回调地址
         ],
 

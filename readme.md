@@ -36,8 +36,6 @@ php -S 127.0.0.1:7663 -t public
 ```
 
 
-### TODO
+### 编辑器 
 
-```
-图片放七牛
-```
+laravel-admin集成百度富文本编辑器ueditor:  https://blog.csdn.net/zmzwll1314/article/details/80279555

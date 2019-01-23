@@ -178,6 +178,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Caijinlin\UEditor\UEditorServiceProvider::class,
+
 
         zgldh\QiniuStorage\QiniuFilesystemServiceProvider::class
     ],

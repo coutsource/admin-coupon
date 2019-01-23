@@ -19,6 +19,7 @@
  */
 
 Encore\Admin\Form::forget(['map']);
+ Encore\Admin\Form::extend('ueditor',\App\Admin\Extensions\Form\UEditor::class);
 
 use Encore\Admin\Facades\Admin;
 
