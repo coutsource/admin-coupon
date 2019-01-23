@@ -11,20 +11,15 @@ class Product extends Model
     protected $casts = [
         'on_sale' => 'boolean', // on_sale 是一个布尔类型的字段
     ];
-    // 与商品SKU关联
-    public function skus()
-    {
-        return $this->hasMany(ProductSku::class);
-    }
 
     public function getCategoryNameAttribute()
     {
         if ($this->attributes['category_id'] == 0) {
-            return 'Root';
+            return "Root";
         } else {
-            $category = Category::where('id', $this->attributes['category_id'])->firstOrFail();
+            $category = Category::where('id', $this->attributes['category_id'])->first();
             if (empty($category)) {
-                return 'Root';
+                return "Root";
             } else {
                 return $category->title;
             }
