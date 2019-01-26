@@ -181,7 +181,8 @@ return [
         Caijinlin\UEditor\UEditorServiceProvider::class,
 
 
-        zgldh\QiniuStorage\QiniuFilesystemServiceProvider::class
+        zgldh\QiniuStorage\QiniuFilesystemServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class
     ],
 
     /*
