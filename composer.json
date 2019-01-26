@@ -4,12 +4,6 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
-    ],
     "require": {
         "php": ">=7.0.0",
         "encore/laravel-admin": "1.5.*",

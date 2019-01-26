@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c21c08a90f74970a8ef7530a15b77c8",
+    "content-hash": "e617499ab171781edc0053a13871c653",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
