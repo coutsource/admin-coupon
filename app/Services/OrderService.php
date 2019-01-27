@@ -83,4 +83,45 @@ class OrderService
 
         return $order;
     }
+
+    public function storeOrder(User $user, UserAddress $address, $orderData)
+    { 
+       // 开启一个数据库事务
+       $order = \DB::transaction(function () use ($user, $address, $orderData) {
+            // 创建一个订单
+            $order   = new Order([
+                'address'      => $address,             
+                'buyer_name'   => $address['contact_name'],
+                'buyer_phone'  => $address['buyer_phone'],
+                'total_amount' => 0,
+                'conversion_code' => $orderData['conversion_code']
+            ]);
+            // 订单关联到当前用户
+            $order->user()->associate($user);
+            // 写入数据库
+            $order->save();
+
+            // TODO 支付方式是啥，支付状态
+
+            $totalAmount = 0;
+            $items       = $orderData['items'];
+            // 遍历用户提交的 items
+            foreach ($item as $items) {
+                // 创建一个 OrderItem 并直接与当前订单关联
+                $item = $order->items()->make([
+                    'product_id' => $item['product_id'],
+                    'amount' => $item['amount'], 
+                    'price'  => $item['price'],
+                ]);
+                $item->save();
+                $totalAmount += $item->price * $item['amount'];
+            }
+            // 更新订单总金额
+            $order->update(['total_amount' => $totalAmount]);
+
+            return $order;
+        }
+
+        return $order;
+    }
 }

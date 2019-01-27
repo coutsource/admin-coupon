@@ -6,6 +6,7 @@ use App\Http\Requests\SendReviewRequest;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
 use App\Models\UserAddress;
+use App\Models\User;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
@@ -134,5 +135,20 @@ class OrdersController extends Controller
         ]);
 
         return $order;
+    }
+    
+    public function apiStore(Request $request, OrderService $orderService)
+    {
+        $user    = User::find($request->input('user_id'));
+        $address = UserAddress::find($request->input('address_id'));
+
+        $order = [
+            'conversion_code' => $request->conversion_code,
+            'items'           => $request->items,
+        ];
+        
+        $order = $orderService->storeOrder($user, $address, $order);
+
+        return $order->id;
     }
 }
