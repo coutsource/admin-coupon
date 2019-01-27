@@ -38,6 +38,11 @@ class ConversionCode extends Model
 	// 指明这两个字段是日期类型
     protected $dates = ['not_before', 'not_after'];
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
 
     public static function findAvailableCode($length = 6)
     {
