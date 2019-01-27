@@ -17,6 +17,7 @@ class AlterTableOrdersColumn extends Migration
             $table->string('buyer_name', 50)->default('');
             $table->string('buyer_phone', 50)->default('');
             $table->string('conversion_code', 50)->default('');
+            $table->unsignedInteger('conversion_code_id')->default(0);
         });
     }
 
@@ -28,7 +29,7 @@ class AlterTableOrdersColumn extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn(['buyer_name', 'buyer_phone', 'conversion_code']);
+            $table->dropColumn(['buyer_name', 'buyer_phone', 'conversion_code', 'conversion_code_id']);
         });
     }
 }

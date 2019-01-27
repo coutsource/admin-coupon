@@ -144,6 +144,7 @@ class OrdersController extends Controller
 
         $order = [
             'conversion_code' => $request->conversion_code,
+            'conversion_code_id' => $request->conversion_code_id,
             'items'           => $request->items,
         ];
         

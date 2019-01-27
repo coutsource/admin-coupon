@@ -94,7 +94,9 @@ class OrderService
                 'buyer_name'   => $address->contact_name,
                 'buyer_phone'  => $address->contact_phone,
                 'total_amount' => 0,
-                'conversion_code' => $orderData['conversion_code']
+                'conversion_code_id'  => $orderData['conversion_code_id'],
+                'conversion_code' => $orderData['conversion_code'],
+                'paid_at'     => Carbon::now(),
             ]);
             // 订单关联到当前用户
             $order->user()->associate($user);
