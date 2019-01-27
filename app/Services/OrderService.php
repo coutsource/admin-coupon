@@ -11,6 +11,7 @@ use App\Models\CouponCode;
 use App\Exceptions\InvalidRequestException;
 use App\Jobs\CloseOrder;
 use Carbon\Carbon;
+use App\Models\ConversionCode;
 
 class OrderService
 {
@@ -81,6 +82,50 @@ class OrderService
         // 这里我们直接使用 dispatch 函数
         dispatch(new CloseOrder($order, config('app.order_ttl')));
 
+        return $order;
+    }
+
+    public function storeOrder(User $user, UserAddress $address, $orderData, $coupon)
+    { 
+       // 开启一个数据库事务
+       $order = \DB::transaction(function () use ($user, $address, $orderData, $coupon) {
+            // 创建一个订单
+            $order  = new Order([
+                'address'      => $address->full_address,
+                'buyer_name'   => $address->contact_name,
+                'buyer_phone'  => $address->contact_phone,
+                'total_amount' => 0,
+                'conversion_code_id'  => $orderData['conversion_code_id'],
+                'conversion_code' => $orderData['conversion_code'],
+                'paid_at'     => Carbon::now(),
+                'payment_method' => 'CONVERSION_CODE'
+            ]);
+            // 订单关联到当前用户
+            $order->user()->associate($user);
+            // 写入数据库
+            $order->save();
+            $coupon->used = true;
+            $coupon->save();
+            // TODO 支付方式是啥，支付状态
+            $totalAmount = 0;
+            $items       = $orderData['items'];
+
+            // 遍历用户提交的 items
+            foreach ($items as $item) {
+                // 创建一个 OrderItem 并直接与当前订单关联
+                $orderItem = $order->items()->make([
+                    'amount' => $item['GoodsNum'], 
+                    'price'  => $item['GoodsPrice'],
+                ]);
+                $orderItem->product()->associate($item['GoodsId']);
+                $orderItem->order()->associate($order->id);
+                $orderItem->save();
+                $totalAmount += $item['GoodsNum'] * $item['GoodsPrice'];
+            }
+            // 更新订单总金额
+            $order->update(['total_amount' => $totalAmount]);
+            return $order;
+        });
         return $order;
     }
 }

@@ -182,7 +182,7 @@ return [
 
 
         zgldh\QiniuStorage\QiniuFilesystemServiceProvider::class,
-        Barryvdh\Cors\ServiceProvider::class
+        Barryvdh\Cors\ServiceProvider::class,
     ],
 
     /*

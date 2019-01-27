@@ -73,15 +73,22 @@ class OrdersController extends Controller
 
             $grid->no('订单流水号');
             // 展示关联关系的字段时，使用 column 方法
-            $grid->column('user.name', '买家');
+            $grid->buyer_name('买家');
+            $grid->buyer_phone('联系方式'); 
+            $grid->address('收货地址');
+            
+            $grid->column('conversion_code_category', '兑换类别')->display(function () {
+                return $this->conversion_code_category;
+            });
+            $grid->conversion_code('兑换卡号');
             $grid->total_amount('总金额')->sortable();
             $grid->paid_at('支付时间')->sortable();
-            $grid->ship_status('物流')->display(function($value) {
-                return Order::$shipStatusMap[$value];
-            });
-            $grid->refund_status('退款状态')->display(function($value) {
-                return Order::$refundStatusMap[$value];
-            });
+            // $grid->ship_status('物流')->display(function($value) { 
+               //  return Order::$shipStatusMap[$value];
+            // });
+            //  $grid->refund_status('退款状态')->display(function($value) {
+            //    return Order::$refundStatusMap[$value];
+            // });
             // 禁用创建按钮，后台不需要创建订单
             $grid->disableCreateButton();
             $grid->actions(function ($actions) {
@@ -100,6 +107,8 @@ class OrdersController extends Controller
             $grid->filter(function($filter) { 
                 $filter->disableIdFilter();
                 $filter->like('no', '订单流水号');
+                $filter->like('conversion_code', '兑换卡号');
+                $filter->like('buyer_phone', '手机号');
             });
         });
     }

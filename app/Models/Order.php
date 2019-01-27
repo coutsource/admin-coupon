@@ -92,6 +92,22 @@ class Order extends Model
         return $this->belongsTo(CouponCode::class);
     }
     
+    public function conversionCode()
+    {
+        return $this->belongsTo(ConversionCode::class);
+    }
+
+    public function getConversionCodeCategoryAttribute()
+    {
+        $conversionCode = $this->conversionCode;
+
+        if ($conversionCode && $conversionCode->category_id) {
+            return array_get($conversionCode->category, 'title', '');
+        } else {
+            return '';
+        } 
+    }
+
     public static function findAvailableNo()
     {
         // 订单流水号前缀
