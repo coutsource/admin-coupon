@@ -90,9 +90,9 @@ class OrderService
        $order = \DB::transaction(function () use ($user, $address, $orderData) {
             // 创建一个订单
             $order   = new Order([
-                'address'      => $address,             
-                'buyer_name'   => $address['contact_name'],
-                'buyer_phone'  => $address['buyer_phone'],
+                'address'      => $address->full_address,
+                'buyer_name'   => $address->contact_name,
+                'buyer_phone'  => $address->contact_phone,
                 'total_amount' => 0,
                 'conversion_code' => $orderData['conversion_code']
             ]);
