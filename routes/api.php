@@ -30,19 +30,22 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('categories', 'CategoriesController@index');
 
     // get all products
-   	Route::get('category_products', 'ProductsController@categories');
+    Route::get('category_products', 'ProductsController@categories');
 
-   	// get products by category
-   	Route::get('category_products/{category_id}', 'ProductsController@getByCategoryId');
-	
-   	// get banners
-   	Route::get('banners', 'BannersController@index');
+    // get products by category
+    Route::get('category_products/{category_id}', 'ProductsController@getByCategoryId');
 
-   	// get addresses
-   	Route::get('addresses', 'UserAddressesController@apiIndex');
-   	Route::post('address/store', 'UserAddressesController@apiStore');
+    // get banners
+    Route::get('banners', 'BannersController@index');
+
+    // get addresses
+    Route::get('addresses', 'UserAddressesController@apiIndex');
+    Route::post('address/store', 'UserAddressesController@apiStore');
     Route::put('address/{id}', 'UserAddressesController@apiUpdate');
     Route::delete('address/{id}', 'UserAddressesController@apiDestroy');
+
+    // order
+    Route::post('orders/store', 'OrdersController@apiStore');
 });
 
 Route::post('conversion_codes/login', 'ConversionCodesController@login');

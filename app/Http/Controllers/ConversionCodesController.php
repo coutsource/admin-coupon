@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\UserConversionCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
 
 class ConversionCodesController extends Controller
 {
@@ -36,7 +38,7 @@ class ConversionCodesController extends Controller
                $user->api_token = str_random(60);
                $user->save();
             }
-            return response()->json(['code' => 200, 'user' => $user]);
+            return response()->json(['code' => 200, 'user' => $user, 'conversionCode' => $conversionCode]);
          }
    		$now = time();
    		if ($now < strtotime($conversionCode->not_before)) {
@@ -51,7 +53,7 @@ class ConversionCodesController extends Controller
          if (empty($user)) {
             return response()->json(['code' => 50000, 'message' => '数据不存在']);
          }
-   		return response()->json(['code' => 200, 'user' => $user]);
+   		return response()->json(['code' => 200, 'user' => $user, 'conversionCode' => $conversionCode]);
    	}
 
       public function logout (Request $request)
@@ -87,8 +89,8 @@ class ConversionCodesController extends Controller
 
    	private function handleConversionCode($conversionCode)
    	{
-   		$conversionCode->used = true;
-   		$conversionCode->save();
+   		// $conversionCode->used = true;
+   		// $conversionCode->save();
    		$user = $this->mockUser($conversionCode->id);
    		$this->createUserConversionCode($user->id, $conversionCode->id);
          return $user;
@@ -97,8 +99,9 @@ class ConversionCodesController extends Controller
    	private function mockUser($conversionCodeId)
    	{
    		$user = new User();
-   		$user->name = "user" . $conversionCodeId;
-   		$user->email = "example" . $conversionCodeId . "@qq.com";
+         $str = Str::random(5);
+   		$user->name = "user" . $conversionCodeId . $str;
+   		$user->email = "example" . $conversionCodeId . $str . "@qq.com";
    		$user->password = md5(md5("abc123_"));
          $user->api_token = str_random(60);
    		$user->save();
