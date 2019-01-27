@@ -90,6 +90,7 @@ class ConversionCodesController extends Controller
 
             $grid->id('ID')->sortable();
             $grid->name('名称')->sortable();
+            $grid->column('category.title', '分类');
             $grid->code('兑换码');
             $grid->passwd('卡密');
             $grid->actived('是否激活')->display(function ($value) {
