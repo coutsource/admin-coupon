@@ -15,6 +15,8 @@ use App\Http\Requests\ApplyRefundRequest;
 use App\Exceptions\CouponCodeUnavailableException;
 use App\Models\CouponCode;
 use Carbon\Carbon;
+use App\Models\ConversionCode;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
 {
@@ -136,20 +138,32 @@ class OrdersController extends Controller
 
         return $order;
     }
-    
+
     public function apiStore(Request $request, OrderService $orderService)
     {
-        $user    = User::find($request->input('user_id'));
-        $address = UserAddress::find($request->input('address_id'));
+        $user = Auth::guard('api')->user();
+        if ($user) {
+            $address = UserAddress::find($request->post('address_id'));
+            $coupon  = null;
+            
+            // 如果用户提交了优惠码
+            if ($code = $request->post('conversion_code')) {
+                $coupon = ConversionCode::where('code', $request->post('conversion_code'))->first();
 
-        $order = [
-            'conversion_code' => $request->conversion_code,
-            'conversion_code_id' => $request->conversion_code_id,
-            'items'           => $request->items,
-        ];
-        
-        $order = $orderService->storeOrder($user, $address, $order);
+                if (!$coupon) {
+                    throw new CouponCodeUnavailableException('兑换码不存在');
+                }
+                $order = [
+                    'conversion_code' => $request->post('conversion_code'),
+                    'conversion_code_id' => $coupon->id,
+                    'items'           => $request->post('items'),
+                ];
+                
+                $order = $orderService->storeOrder($user, $address, $order, $coupon);
 
-        return $order->id;
+                return response()->json(['orderId' => $order->id]);
+            }
+        }
+        return response()->json();
     }
 }
