@@ -105,27 +105,6 @@ class OrderService
             // 写入数据库
             $order->save();
 
-            // TODO 支付方式是啥，支付状态
-
-            $totalAmount = 0;
-            $items       = $orderData['items'];
-            // 遍历用户提交的 items
-            foreach ($item as $items) {
-                // 创建一个 OrderItem 并直接与当前订单关联
-                $item = $order->items()->make([
-                    'product_id' => $item['product_id'],
-                    'amount' => $item['amount'], 
-                    'price'  => $item['price'],
-                ]);
-                $item->save();
-                $totalAmount += $item->price * $item['amount'];
-            }
-            // 更新订单总金额
-            $order->update(['total_amount' => $totalAmount]);
-
-            return $order;
-        }
-
             $coupon->used = true;
             $coupon->save();
             // TODO 支付方式是啥，支付状态
