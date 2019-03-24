@@ -72,6 +72,8 @@ class ProductsController extends Controller
             $grid->on_sale('已上架')->display(function ($value) {
                 return $value ? '是' : '否';
             });
+            $grid->brand('品牌');
+            $grid->provider('供应商');
             $grid->price('价格');
             $grid->stock('库存');
             // $grid->rating('评分');
@@ -112,6 +114,8 @@ class ProductsController extends Controller
             // 创建一组单选框
             $form->radio('on_sale', '上架')->options(['1' => '是', '0' => '否'])->default('0');
             $form->select('category_id', '类别')->options(Category::selectOptions());
+            $form->text('brand', '品牌')->rules('required');
+            $form->text('provider', '供应商')->rules('required');
             $form->text('stock', '库存')->rules('required|integer|min:0');
             $form->text('price', '价格')->rules('required|min:0');
         });

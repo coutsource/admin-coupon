@@ -13,6 +13,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use App\Http\Requests\Admin\HandleRefundRequest;
+use App\Admin\Extensions\CsvExpoter;
 
 class OrdersController extends Controller
 {
@@ -110,6 +111,8 @@ class OrdersController extends Controller
                 $filter->like('conversion_code', '兑换卡号');
                 $filter->like('buyer_phone', '手机号');
             });
+
+            $grid->exporter(new CsvExpoter());
         });
     }
 

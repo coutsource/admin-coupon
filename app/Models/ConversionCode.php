@@ -17,18 +17,18 @@ class ConversionCode extends Model
 		'not_after',
 	];
 
-        public function getExportColumns() 
-        { 
-            return [
-                'name' => '名称',
-                'code' => '卡号',
-                'passwd' => '密码',
-                'actived' => '激活状态',
-                'used' => '使用状态',
-                'not_before' => '生效时间',
-                'not_after' => '失效时间',
-            ];
-        }
+    public function getExportColumns() 
+    { 
+        return [
+            'name' => '名称',
+            'code' => '卡号',
+            'passwd' => '密码',
+            'actived' => '激活状态',
+            'used' => '使用状态',
+            'not_before' => '生效时间',
+            'not_after' => '失效时间',
+        ];
+    }
 
 	protected $casts = [
 		'actived' => 'boolean',

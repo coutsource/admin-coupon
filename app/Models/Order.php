@@ -48,6 +48,22 @@ class Order extends Model
         'extra',
     ];
 
+    public function getExportColumns() 
+    { 
+        return [
+            'no' => '订单编号',
+            'address' => '地址',
+            'total_amount' => '总金额',
+            'remark' => '备注',
+            'paid_at' => '支付时间',
+            'payment_method' => '付款方法',
+            'payment_no' => '支付编号',
+            'refund_status' => '退款状态',
+            'refund_no' => '退款编号',
+            'closed' => '是否关闭'
+        ];
+    }
+
     protected $casts = [
         'closed'    => 'boolean',
         'reviewed'  => 'boolean',
