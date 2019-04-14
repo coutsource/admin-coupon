@@ -46,6 +46,8 @@ class Order extends Model
         'ship_status',
         'ship_data',
         'extra',
+        'buyer_name',
+        'buyer_phone'
     ];
 
     public function getExportColumns() 
