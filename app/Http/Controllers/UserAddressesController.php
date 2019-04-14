@@ -99,8 +99,8 @@ class UserAddressesController extends Controller
             $userAddress->province = $request->post('province');
             $userAddress->city = $request->post('city');
             $userAddress->district = $request->post('county');
-            $userAddress->address = $request->post('address_detail');
-            $userAddress->area_code = $request->post('area_code');
+            $userAddress->address = $request->post('addressDetail');
+            $userAddress->area_code = $request->post('areaCode');
             $userAddress->zip = $request->post('postal_code');
             $userAddress->contact_name = $request->post('name');
             $userAddress->contact_phone = $request->post('tel');
