@@ -95,6 +95,11 @@ class Order extends Model
         });
     }
 
+    public function orderLogistic()
+    {
+        return $this->hasOne(OrderLogistic::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

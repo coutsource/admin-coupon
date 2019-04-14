@@ -81,9 +81,19 @@ class OrdersController extends Controller
             $grid->column('conversion_code_category', '卡类别')->display(function () {
                 return $this->conversion_code_category;
             });
-            $grid->conversion_code('兑换卡号');
+
+            $grid->column('conversion_code', '兑换卡号')->display(function () {
+                return $this->conversion_code;
+            });
             // $grid->total_amount('总金额')->sortable();
             $grid->paid_at('支付时间')->sortable();
+
+            $grid->orderLogistic()->logistics_type('物流类型');
+
+            $isShowSend = false;
+            if (empty($grid->orderLogistic()->logistics_number('运单号'))) {
+                $isShowSend = true;
+            }
             // $grid->ship_status('物流')->display(function($value) { 
                //  return Order::$shipStatusMap[$value];
             // });
@@ -92,13 +102,15 @@ class OrdersController extends Controller
             // });
             // 禁用创建按钮，后台不需要创建订单
             $grid->disableCreateButton();
-            $grid->actions(function ($actions) {
+            $grid->actions(function ($actions) use ($isShowSend) {
                 // 禁用删除和编辑按钮
                 $actions->disableDelete();
                 $actions->disableEdit();
                 $actions->disableView();
                 $actions->append('<a class="btn btn-xs btn-primary" href="'.route('admin.orders.show', [$actions->getKey()]).'">查看</a>');
-                $actions->append('<a class="btn btn-xs btn-primary" href="'.route('admin.order_logistics.create', [$actions->getKey()]).'">发货</a>');
+                if ($isShowSend) {
+                    $actions->append('<a class="btn btn-xs btn-primary" href="'.route('admin.order_logistics.create', [$actions->getKey()]).'">发货</a>');
+                }
             });
             $grid->tools(function ($tools) {
                 // 禁用批量删除按钮

@@ -29,6 +29,11 @@ class LogisticsController extends Controller {
         });
     }
 
+    public function store(OrderLogistic $orderLogistic) {
+        $this->form(request('order_id'))->store();
+        return redirect('admin/orders');
+    }
+
     /**
      * Make a form builder.
      *
@@ -39,9 +44,9 @@ class LogisticsController extends Controller {
         return Admin::form(OrderLogistic::class, function (Form $form) use ($orderId) {
 
             $form->display('id', 'ID');
-            $form->display('order_id', '订单ID')->value($orderId);
-            $form->select('logistics_type', '物流类型')->options(OrderLogistic::getLogisticsOptions())->rules('required');;
-            $form->text('logistics_number', '物流单号')->rules('required');;
+            $form->hidden('order_id')->value($orderId);
+            $form->select('logistics_type', '物流类型')->options(OrderLogistic::getLogisticsOptions());
+            $form->text('logistics_number', '物流单号');
             $form->display('created_at', '创建时间');
             $form->display('updated_at', '更新时间');
         });

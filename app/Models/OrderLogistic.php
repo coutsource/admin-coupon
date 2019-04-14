@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderLogistic extends Model
 {
-    protected $fillable = ['logistics_type', 'logistics_number'];
+    protected $fillable = ['logistics_type', 'logistics_number', 'order_id'];
     public $timestamps = false;
 
     public function order()
