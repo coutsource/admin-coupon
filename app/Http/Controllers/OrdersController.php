@@ -16,6 +16,7 @@ use App\Exceptions\CouponCodeUnavailableException;
 use App\Models\CouponCode;
 use Carbon\Carbon;
 use App\Models\ConversionCode;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
@@ -157,6 +158,7 @@ class OrdersController extends Controller
                     'conversion_code' => $request->post('conversion_code'),
                     'conversion_code_id' => $coupon->id,
                     'items'           => $request->post('items'),
+                    'buyer_word' => $request->post('buyer_word'),
                 ];
                 
                 $order = $orderService->storeOrder($user, $address, $order, $coupon);
@@ -165,5 +167,34 @@ class OrdersController extends Controller
             }
         }
         return response()->json();
+    }
+
+    public function apiIndex(Request $request) {
+        $user = Auth::guard('api')->user();
+        if ($user) {
+            $data = [];
+            $orders = Order::where('user_id', $user->id)->with('items')->get();
+
+            foreach ($orders as $order) {
+                $productIds = [];
+                foreach ($order->items as $item) {
+                    array_push($productIds, $item->product_id);
+                }
+                $goodsItems = Product::whereIn('id', $productIds)->get();
+                
+                foreach ($goodsItems as $goodsItem) {
+                    $goodsItem->image = env('STATIC_URL') . '/' . $goodsItem->image;
+                }
+
+                $order->goodsItems = $goodsItems;
+                if ($order->refund_status == Order::REFUND_STATUS_PENDING) {
+                    $order->status = Order::$shipStatusMap[$order->ship_status];
+                } else {
+                    $order->status = Order::$refundStatusMap[$order->refund_status];
+                }
+            }
+
+            return response()->json(['orders' => $orders]);
+        }
     }
 }

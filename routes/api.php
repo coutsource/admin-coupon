@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // order
     Route::post('orders/store', 'OrdersController@apiStore');
+    Route::get('orders', 'OrdersController@apiIndex');
 });
 
 Route::post('conversion_codes/login', 'ConversionCodesController@login');

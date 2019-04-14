@@ -74,15 +74,15 @@ class OrdersController extends Controller
 
             $grid->no('订单流水号');
             // 展示关联关系的字段时，使用 column 方法
-            $grid->buyer_name('买家');
+            $grid->buyer_name('收货人');
             $grid->buyer_phone('联系方式'); 
             $grid->address('收货地址');
             
-            $grid->column('conversion_code_category', '兑换类别')->display(function () {
+            $grid->column('conversion_code_category', '卡类别')->display(function () {
                 return $this->conversion_code_category;
             });
             $grid->conversion_code('兑换卡号');
-            $grid->total_amount('总金额')->sortable();
+            // $grid->total_amount('总金额')->sortable();
             $grid->paid_at('支付时间')->sortable();
             // $grid->ship_status('物流')->display(function($value) { 
                //  return Order::$shipStatusMap[$value];
@@ -96,7 +96,9 @@ class OrdersController extends Controller
                 // 禁用删除和编辑按钮
                 $actions->disableDelete();
                 $actions->disableEdit();
+                $actions->disableView();
                 $actions->append('<a class="btn btn-xs btn-primary" href="'.route('admin.orders.show', [$actions->getKey()]).'">查看</a>');
+                $actions->append('<a class="btn btn-xs btn-primary" href="'.route('admin.order_logistics.create', [$actions->getKey()]).'">发货</a>');
             });
             $grid->tools(function ($tools) {
                 // 禁用批量删除按钮

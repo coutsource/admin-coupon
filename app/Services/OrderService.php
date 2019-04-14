@@ -95,6 +95,7 @@ class OrderService
                 'buyer_name'   => $address->contact_name,
                 'buyer_phone'  => $address->contact_phone,
                 'total_amount' => 0,
+                'remark' => $orderData['buyer_word'],
                 'conversion_code_id'  => $orderData['conversion_code_id'],
                 'conversion_code' => $orderData['conversion_code'],
                 'paid_at'     => Carbon::now(),
